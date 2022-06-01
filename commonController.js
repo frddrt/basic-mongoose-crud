@@ -3,7 +3,7 @@
  * @since 2022-06-01 12:29:20
  */
 
-export class CreateCommonController {
+export default class CreateCommonController {
 	constructor (Model) {
 		this.Model = Model
 
