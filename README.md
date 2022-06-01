@@ -2,7 +2,7 @@
 This library was tested using [mongoose](https://www.npmjs.com/package/mongoose) version 5.11.8.
 # Installing
 ```shell
-$ npm install basic-mongoose-crud`
+$ npm install @ferracinitec/basic-mongoose-crud`
 ```
 # Importing
 ```JavaScript
