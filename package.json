@@ -1,0 +1,24 @@
+{
+  "name": "@ferracinitec/basic-mongoose-crud",
+  "version": "0.1.0",
+  "description": "Create a basic CRUD for mongoose entities",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frddrt/basic-mongoose-crud.git"
+  },
+  "keywords": [
+    "CRUD",
+    "mongoose"
+  ],
+  "author": "Ferracini Tecnologia e Sistemas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/frddrt/basic-mongoose-crud/issues"
+  },
+  "homepage": "https://github.com/frddrt/basic-mongoose-crud#readme"
+}
