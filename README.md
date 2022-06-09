@@ -43,6 +43,7 @@ createCommonRoute(publicRouter, '/mobile', mobileController)
 To do a custom controller you can extends createCommonController and overrides the following methods:
 - **verbGetMiddleware** => Executed after the _find_ in _verbGet_, receiving an array with mongoose models. The data can be modified and must have returned.
 - **verbGetByIdMiddleware** => Same the _verbGetMiddleware_, but executed in _verbGetById_ and receive and return a single model.
+- **preUpdateMiddleware** => Before the update in _verbPut_. Receive the id and the parameters. Must have return the parameters to update.
 - **postUpdateMiddleware** => After the update in _verbPut_. Receive the model updated, for execute another actions. Must have return a model.
 - **postInsertMiddleware** => After the insert in _verbPost_. Receive the new model, for execute another actions. Must have return a model.
 - **verbGet** => Return an array with models finded, according to the given filter.
@@ -54,16 +55,16 @@ To do a custom controller you can extends createCommonController and overrides t
 
 # Documentation
 ## Http verb GET
-A filter can be executed, passing a field in a url.  
+A filter can be executed, passing a field in a url.
 `http://localhost/mobile?manufacturer=motorola`
 
-Regex expressions can be made like.  
+Regex expressions can be made like.
 `http://localhost/mobile?manufacturer__regex=[mM]otorola`
 
-Also JSON especifcs commands.  
+Also JSON especifcs commands.
 `http://localhost/mobile?manufacture__json={"$in":["motorola","apple"]}`
 
-To populate submodels use `__populate`.  
+To populate submodels use `__populate`.
 `http://localhost/mobile?manufacture=motorola&__populate=[{"path":"models"}]`
 
 Use `__fields` to determine a list of fields to display, `__sort` to sorting results and `__limit` to limit a number of results
