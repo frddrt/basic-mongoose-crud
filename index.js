@@ -3,13 +3,13 @@
  * @since 2022-06-01 12:24:56
  */
 
-import { default as commonRoute } from './lib/commonRoute.js'
-import { default as commonController } from './lib/commonController.js'
+import { default as commonRoute } from './lib/CommonRoute.js'
+import { default as CommonController } from './lib/CommonController.js'
 
 export const createCommonRoute = commonRoute
-export const createCommonController = commonController
+export const CreateCommonController = CommonController
 export const create = (router, route, model) => {
-	const commonController = new createCommonController(model)
+	const commonController = new CreateCommonController(model)
 	createCommonRoute(router, route, commonController)
 
 	return commonController
@@ -17,6 +17,6 @@ export const create = (router, route, model) => {
 
 export default {
 	create,
-	createCommonRoute,
-	createCommonController,
+	createCommonRoute: createCommonRoute,
+	CreateCommonController: CreateCommonController,
 }
