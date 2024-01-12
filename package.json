@@ -1,6 +1,6 @@
 {
   "name": "@ferracinitec/basic-mongoose-crud",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Create a basic CRUD for mongoose entities",
   "type": "module",
   "main": "index.js",
