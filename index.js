@@ -3,8 +3,8 @@
  * @since 2022-06-01 12:24:56
  */
 
-import { default as commonRoute } from './lib/CommonRoute.js'
-import { default as CommonController } from './lib/CommonController.js'
+import { default as commonRoute } from './lib/commonRoute.js'
+import { default as CommonController } from './lib/commonController.js'
 
 export const createCommonRoute = commonRoute
 export const CreateCommonController = CommonController
