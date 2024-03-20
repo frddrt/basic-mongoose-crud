@@ -1,15 +1,22 @@
 # BasicMongooseCrud
-This library was tested using [mongoose](https://www.npmjs.com/package/mongoose) version 5.11.8.
-# Installing
+
+This library has been tested using [mongoose](https://www.npmjs.com/package/mongoose) version 5.11.8.
+
+## Installation
+
 ```shell
 $ npm install @ferracinitec/basic-mongoose-crud
 ```
-# Importing
+
+## Importing
+
 ```JavaScript
 import { createCommonController, createCommonRoute } from '@ferracinitec/basic-mongoose-crud'
 ```
-# Example
-That's example provide a `<your site>/mobile` url with get (all register using `/` or `/[id]`), post, put, delete, copy and path http verbs.
+
+## Example
+
+This example provides a URL `<your site>/mobile` with the HTTP verbs GET (all records using `/` or `/[id]` for a specific one), POST, PUT, DELETE, COPY, and PATCH.
 
 ```JavaScript
 import express from 'express'
@@ -19,7 +26,7 @@ import mobile from './mongoose-schemas/mobile.js'
 // Create a public router
 const publicRouter = express.Router()
 
-// Create a controller and define a route for get, post, put, delete.
+// Create a controller and define a route for GET, POST, PUT, DELETE.
 const mobileController = basicMongooseCrud.create(publicRouter, '/mobile', mobile)
 ```
 
@@ -36,43 +43,52 @@ const publicRouter = express.Router()
 // Create a controller
 const mobileController = new createCommonController(mobile)
 
-// Define a route for get, post, put, delete
+// Define a route for GET, POST, PUT, DELETE
 createCommonRoute(publicRouter, '/mobile', mobileController)
 ```
-# Custom Controller
-To do a custom controller you can extends createCommonController and overrides the following methods:
-- **verbGetMiddleware** => Executed after the _find_ in _verbGet_, receiving an array with mongoose models. The data can be modified and must have returned.
-- **verbGetByIdMiddleware** => Same the _verbGetMiddleware_, but executed in _verbGetById_ and receive and return a single model.
-- **preUpdateMiddleware** => Before the update in _verbPut_. Receive the id and the parameters. Must have return the parameters to update.
-- **postUpdateMiddleware** => After the update in _verbPut_. Receive the model updated, for execute another actions. Must have return a model.
-- **postInsertMiddleware** => After the insert in _verbPost_. Receive the new model, for execute another actions. Must have return a model.
-- **verbGet** => Return an array with models finded, according to the given filter.
-- **verbGetById** => Return a single model, according ID given in url.
-- **verbPost** => Insert a new model, according parameters in body.
-- **verbPut** => Update a model finded according ID given in url with data in body.
-- **verbDelete** => Delete a model finded according ID given in url.
-- **verbCopy** => Do nothing. Needs implementation.
 
-# Documentation
-## Http verb GET
-A filter can be executed, passing a field in a url.
+## Custom Controller
+
+To create a custom controller, you should extend the CreateCommonController class and override the following methods:
+
+- **verbGetMiddleware**: Executed after the _find_ in _verbGet_, receiving an array with mongoose models. The data can be modified and must be returned.
+- **verbGetByIdMiddleware**: Same as the _verbGetMiddleware_, but executed in _verbGetById_ and receives and returns a single model.
+- **preUpdateMiddleware**: Before the update in _verbPut_. Receives the ID and the parameters. Must return the parameters to update.
+- **postUpdateMiddleware**: After the update in _verbPut_. Receives the updated model to execute other actions. Must return a model.
+- **postInsertMiddleware**: After the insert in _verbPost_. Receives the new model to execute other actions. Must return a model.
+- **verbGet**: Returns an array with the documents searched according to the provided filter.
+- **verbGetById**: Returns a single model, according to the ID given in the URL.
+- **verbPost**: Inserts a new model, according to the parameters in the body.
+- **verbPut**: Updates a model found according to the ID given in the URL with data in the body.
+- **verbDelete**: Deletes a model found according to the ID given in the URL.
+- **verbCopy**: Does nothing. Needs implementation.
+
+## Documentation
+
+### HTTP Verb GET
+
+A filter can be executed by passing a field in a URL.
+
 `http://localhost/mobile?manufacturer=motorola`
 
-Regex expressions can be made like.
+Regular expressions can be used like this:
+
 `http://localhost/mobile?manufacturer__regex=[mM]otorola`
 
-Also JSON especifcs commands.
+Also JSON-specific commands:
+
 `http://localhost/mobile?manufacture__json={"$in":["motorola","apple"]}`
 
-To populate submodels use `__populate`.
+To populate submodels, use `__populate`:
+
 `http://localhost/mobile?manufacture=motorola&__populate=[{"path":"models"}]`
 
-Use `__fields` to determine a list of fields to display, `__sort` to sorting results and `__limit` to limit a number of results
+Use `__fields` to determine a list of fields to display, `__sort` for sorting results, and `__limit` to limit the number of results.
 
-Passing an id in the url will only return 1 model.
+Passing an ID in the URL will only return one model.
 
-## Http verb POST
+### HTTP Verb POST
 
-## Http verb PUT
+### HTTP Verb PUT
 
-## Http verb DELETE
+### HTTP Verb DELETE
