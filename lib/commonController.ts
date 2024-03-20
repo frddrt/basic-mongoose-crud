@@ -3,8 +3,14 @@
  * @since 2022-06-01 12:29:20
  */
 
-export default class CreateCommonController {
-	constructor (Model) {
+import { Request, Response } from "express"
+import { Model } from "mongoose"
+
+export default class CreateCommonController<T> {
+	Model: Model<T>
+	reservedKeys: Array<string>
+
+	constructor (Model: Model<T>) {
 		this.Model = Model
 
 		this.reservedKeys = ['__fields', '__populate', '__sort', '__limit', 'on']
@@ -24,13 +30,13 @@ export default class CreateCommonController {
 		this.buildFilter = this.buildFilter.bind(this)
 	}
 
-	verbGetMiddleware(models) { return models }
-	verbGetByIdMiddleware(model) { return model }
-	preUpdateMiddleware(id, param) { return param }
-	postUpdateMiddleware(updateJson, model) { return model }
-	postInsertMiddleware(insertJson, model) { return model }
+	verbGetMiddleware(models: any): any { return models }
+	verbGetByIdMiddleware(model: any): any { return model }
+	preUpdateMiddleware(id: string, param: any) { return param }
+	postUpdateMiddleware(updateJson: any, model: any) { return model }
+	postInsertMiddleware(insertJson: any, model: any) { return model }
 
-	modifiers(query) {
+	modifiers(query: any) {
 		return {
 			fields: JSON.parse(query.__fields || '[]'),
 			populate: JSON.parse(query.__populate || '[]'),
@@ -39,8 +45,8 @@ export default class CreateCommonController {
 		}
 	}
 
-	buildFilter(query) {
-		const filter = {}
+	buildFilter(query: any) {
+		const filter: any = {}
 
 		for (const key in query) {
 			if (!this.reservedKeys.includes(key)) {
@@ -57,7 +63,7 @@ export default class CreateCommonController {
 		return filter
 	}
 
-    verbGet(request, response) {
+    verbGet(request: Request, response: Response) {
 		const {query} = request
 		const filter = this.buildFilter(query)
 		const {fields, populate, sort, limit} = this.modifiers(query)
@@ -67,12 +73,12 @@ export default class CreateCommonController {
 		.populate(populate)
 		.sort(sort)
 		.limit(limit)
-		.then(this.verbGetMiddleware)
+		.then(models => this.verbGetMiddleware(models))
         .then(models => response.json(models))
         .catch(error => response.json({error}))
     }
 
-	verbGetById(request, response) {
+	verbGetById(request: Request, response: Response) {
 		const {query} = request
 		const id = request.params.id
 		const {fields, populate, sort, limit} = this.modifiers(query)
@@ -87,7 +93,7 @@ export default class CreateCommonController {
         .catch(error => response.json({error}))
 	}
 
-	verbPost(request, response) {
+	verbPost(request: Request, response: Response) {
 		const param = request.body
 
 		this.Model.create(param)
@@ -96,7 +102,7 @@ export default class CreateCommonController {
         .catch(error => response.json({error}))
 	}
 
-	verbPut(request, response) {
+	verbPut(request: Request, response: Response) {
 		const id = request.params.id
 		const param = request.body
 		const newParam = this.preUpdateMiddleware(id, param)
@@ -110,7 +116,7 @@ export default class CreateCommonController {
 		.catch(error => response.json({error}))
 	}
 
-	verbDelete(request, response) {
+	verbDelete(request: Request, response: Response) {
 		const id = request.params.id
 
 		this.Model.findByIdAndDelete(id)
@@ -118,6 +124,9 @@ export default class CreateCommonController {
 		.catch(error => response.json({error}))
 	}
 
-	verbCopy(request, response) {
+	verbCopy(request: Request, response: Response) {
+	}
+
+	verbPatch(request: Request, response: Response) {
 	}
 }
