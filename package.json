@@ -9,6 +9,9 @@
   "files": [
 	"dist"
   ],
+  "funding": [
+	{"type": "patreon", "url": "https://www.patreon.com/FerraciniTec"}
+  ],
   "scripts": {
     "build": "tsup",
     "test": "echo \"Error: no test specified\" && exit 1"
