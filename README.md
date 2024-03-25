@@ -1,6 +1,8 @@
 # BasicMongooseCrud
 
-This library has been tested using [mongoose](https://www.npmjs.com/package/mongoose) version 5.11.8.
+This repository contains a set of common utilities for creating CRUD (Create, Read, Update, Delete) routes and controllers using Mongoose with TypeScript.
+
+Tests has been made using [mongoose](https://www.npmjs.com/package/mongoose) version 5.11.8.
 
 ## Installation
 
@@ -11,7 +13,11 @@ $ npm install @ferracinitec/basic-mongoose-crud
 ## Importing
 
 ```JavaScript
-import { createCommonController, createCommonRoute } from '@ferracinitec/basic-mongoose-crud'
+import basicMongooseCrud from '@ferracinitec/basic-mongoose-crud'
+```
+or
+```JavaScript
+import { CreateCommonController, createCommonRoute } from '@ferracinitec/basic-mongoose-crud'
 ```
 
 ## Example
@@ -34,14 +40,14 @@ or
 
 ```JavaScript
 import express from 'express'
-import { createCommonController, createCommonRoute } from '@ferracinitec/basic-mongoose-crud'
+import { CreateCommonController, createCommonRoute } from '@ferracinitec/basic-mongoose-crud'
 import mobile from './mongoose-schemas/mobile.js'
 
 // Create a public router
 const publicRouter = express.Router()
 
 // Create a controller
-const mobileController = new createCommonController(mobile)
+const mobileController = new CreateCommonController(mobile)
 
 // Define a route for GET, POST, PUT, DELETE
 createCommonRoute(publicRouter, '/mobile', mobileController)
@@ -62,33 +68,234 @@ To create a custom controller, you should extend the CreateCommonController clas
 - **verbPut**: Updates a model found according to the ID given in the URL with data in the body.
 - **verbDelete**: Deletes a model found according to the ID given in the URL.
 - **verbCopy**: Does nothing. Needs implementation.
+- **verbPatch**: Does nothing. Needs implementation.
 
 ## Documentation
 
 ### HTTP Verb GET
 
-A filter can be executed by passing a field in a URL.
+#### A filter can be executed by passing any field of the document in a URL.
 
-`http://localhost/mobile?manufacturer=motorola`
+```javascript
+const token = 'a Bearer token'
+const headers: Headers = new Headers()
+headers.append('Authorization', `Bearer ${token}`)
 
-Regular expressions can be used like this:
+const config = {
+	method: 'get',
+	mode: 'cors',
+	headers: headers,
+	redirect: 'follow'
+}
 
-`http://localhost/mobile?manufacturer__regex=[mM]otorola`
+const params = new URLSearchParams()
+params.append('manufacturer', 'motorola')
 
-Also JSON-specific commands:
+const url = `http://localhost/mobile?${params.toString()}`
+fetch(url, config)
+.then(response => response.json())
+.then(data => {
+	...
+})
+.catch(error => console.log('[getDevices]', error))
+```
 
-`http://localhost/mobile?manufacture__json={"$in":["motorola","apple"]}`
+#### Regular expressions can be used like this:
 
-To populate submodels, use `__populate`:
+```javascript
+const token = 'a Bearer token'
+const headers: Headers = new Headers()
+headers.append('Authorization', `Bearer ${token}`)
 
-`http://localhost/mobile?manufacture=motorola&__populate=[{"path":"models"}]`
+const config = {
+	method: 'get',
+	mode: 'cors',
+	headers: headers,
+	redirect: 'follow'
+}
 
-Use `__fields` to determine a list of fields to display, `__sort` for sorting results, and `__limit` to limit the number of results.
+const params = new URLSearchParams()
+params.append('manufacturer__regex', '[Mm]otorola')
 
-Passing an ID in the URL will only return one model.
+const url = `http://localhost/mobile?${params.toString()}`
+fetch(url, config)
+.then(response => response.json())
+.then(data => {
+	...
+})
+.catch(error => console.log('[getDevices]', error))
+```
+
+#### Also JSON-specific commands:
+
+```javascript
+const token = 'a Bearer token'
+const headers: Headers = new Headers()
+headers.append('Authorization', `Bearer ${token}`)
+
+const config = {
+	method: 'get',
+	mode: 'cors',
+	headers: headers,
+	redirect: 'follow'
+}
+
+const params = new URLSearchParams()
+params.append('manufacturer__json', JSON.stringify({
+	"$in": [
+		"motorola",
+		"apple"
+	]
+}))
+
+const url = `http://localhost/mobile?${params.toString()}`
+fetch(url, config)
+.then(response => response.json())
+.then(data => {
+	...
+})
+.catch(error => console.log('[getDevices]', error))
+```
+
+#### To populate submodels, use `__populate`:
+
+```javascript
+const token = 'a Bearer token'
+const headers: Headers = new Headers()
+headers.append('Authorization', `Bearer ${token}`)
+
+const config = {
+	method: 'get',
+	mode: 'cors',
+	headers: headers,
+	redirect: 'follow'
+}
+
+const params = new URLSearchParams()
+params.append('manufacturer', 'motorola')
+params.append('__populate', JSON.stringify([
+	{path: "models"}
+]))
+
+const url = `http://localhost/mobile?${params.toString()}`
+fetch(url, config)
+.then(response => response.json())
+.then(data => {
+	...
+})
+.catch(error => console.log('[getDevices]', error))
+```
+
+#### Also use
+- `__fields` to determine a list of fields to display;
+- `__sort` for sorting results
+- `__limit` to limit the number of results.
+
+#### To retrieve a specific document
+
+Pass the document ID in the URL.
+
+```javascript
+const token = 'a Bearer token'
+const headers: Headers = new Headers()
+headers.append('Authorization', `Bearer ${token}`)
+
+const config = {
+	method: 'get',
+	mode: 'cors',
+	headers: headers,
+	redirect: 'follow'
+}
+
+const url = `http://localhost/mobile/${device._id}`
+fetch(url, config)
+.then(response => response.json())
+.then(data => {
+	...
+})
+.catch(error => console.log('[getDevices]', error))
+```
 
 ### HTTP Verb POST
 
+To create a new document, perform a POST request to the URL and pass the document in the request body.
+
+```javascript
+const url = 'http://localhost/mobile'
+const token = 'a Bearer token'
+
+const headers: Headers = new Headers()
+headers.append('Authorization', `Bearer ${token}`)
+headers.append('Content-Type', 'application/json')
+
+const config = {
+	method: 'post',
+	mode: 'cors',
+	headers: headers,
+	redirect: 'follow',
+	body: JSON.stringify({
+		manufacture: 'motorola',
+		model: 'Moto Gx',
+	})
+}
+
+fetch(url, config)
+.then(response => response.json())
+.then(data => setDevice(data))
+.catch(error => console.log('[saveDeviceInfo]', error))
+```
+
 ### HTTP Verb PUT
 
+To update a document, perform a PUT request to the URL, passing the document ID in URL and the fields to be updated in the request body.
+
+```javascript
+const id = device._id
+const url = `http://localhost/mobile/${id}`
+const token = 'a Bearer token'
+
+const headers: Headers = new Headers()
+headers.append('Authorization', `Bearer ${token}`)
+headers.append('Content-Type', 'application/json')
+
+const config = {
+	method: 'put',
+	mode: 'cors',
+	headers: headers,
+	redirect: 'follow',
+	body: JSON.stringify({
+		model: 'Moto Gxyz',
+	})
+}
+
+fetch(url, config)
+.then(response => response.json())
+.then(data => setDevice(data))
+.catch(error => console.log('[saveDeviceInfo]', error))
+```
+
 ### HTTP Verb DELETE
+
+To delete a document, perform a DELETE request to the URL passing the document ID in the URL.
+
+```javascript
+const id = device._id
+const url = `http://localhost/mobile/${id}`
+const token = 'a Bearer token'
+
+const headers: Headers = new Headers()
+headers.append('Authorization', `Bearer ${token}`)
+headers.append('Content-Type', 'application/json')
+
+const config = {
+	method: 'delete',
+	mode: 'cors',
+	headers: headers,
+	redirect: 'follow',
+}
+
+fetch(url, config)
+.then(response => response.json())
+.then(data => setDevice(data))
+.catch(error => console.log('[saveDeviceInfo]', error))
+```
