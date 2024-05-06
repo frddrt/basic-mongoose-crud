@@ -13,7 +13,7 @@ export default class CreateCommonController<T> {
 	constructor (Model: Model<T>) {
 		this.Model = Model
 
-		this.reservedKeys = ['__fields', '__populate', '__sort', '__limit', 'on']
+		this.reservedKeys = ['__fields', '__populate', '__sort', '__limit', '__skip', 'on']
 
 		this.verbGetMiddleware = this.verbGetMiddleware.bind(this)
 		this.verbGetByIdMiddleware = this.verbGetByIdMiddleware.bind(this)
@@ -42,6 +42,7 @@ export default class CreateCommonController<T> {
 			populate: JSON.parse(query.__populate || '[]'),
 			sort: JSON.parse(query.__sort || '{}'),
 			limit: Number(query.__limit || '0'),
+			skip: Number(query.__skip || '0'),
 		}
 	}
 
@@ -66,13 +67,14 @@ export default class CreateCommonController<T> {
     verbGet(request: Request, response: Response) {
 		const {query} = request
 		const filter = this.buildFilter(query)
-		const {fields, populate, sort, limit} = this.modifiers(query)
+		const {fields, populate, sort, limit, skip} = this.modifiers(query)
 
         this.Model.find(filter)
 		.select(fields)
 		.populate(populate)
 		.sort(sort)
 		.limit(limit)
+		.skip(skip)
 		.then(models => this.verbGetMiddleware(models))
         .then(models => response.json(models))
         .catch(error => response.json({error}))
