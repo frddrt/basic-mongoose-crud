@@ -189,7 +189,8 @@ fetch(url, config)
 #### Also use
 - `__fields` to determine a list of fields to display;
 - `__sort` for sorting results
-- `__limit` to limit the number of results.
+- `__limit` to limit the number of results. Should be used with `__skip` for pagination.
+- `__skip` to skip registers. Should be used with `__limit` for pagination.
 
 #### To retrieve a specific document
 
